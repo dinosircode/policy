@@ -4,14 +4,10 @@ export default function Page() {
   return (
     <section>
       <h1 className="mb-8 text-2xl font-semibold tracking-tighter">
-        My Portfolio
+      PITBP: Documentation, Policies, and Information
       </h1>
       <p className="mb-4">
-        {`I'm a Vim enthusiast and tab advocate, finding unmatched efficiency in
-        Vim's keystroke commands and tabs' flexibility for personal viewing
-        preferences. This extends to my support for static typing, where its
-        early error detection ensures cleaner code, and my preference for dark
-        mode, which eases long coding sessions by reducing eye strain.`}
+        {`At Plus IT Park Thrissur, we prioritize transparency and effective communication by providing comprehensive documentation and policies for our stakeholders. This page serves as a centralized hub for all essential information, including our operational guidelines, safety protocols, and compliance measures. We believe that clear policies are vital for fostering a collaborative and productive environment. Here, you will find detailed resources that outline our expectations, procedures, and the support available to both employees and partners. We encourage you to explore these documents to gain a deeper understanding of our commitment to excellence and integrity in all our endeavors. Your adherence to these policies is crucial in maintaining a thriving community within Plus IT Park.`}
       </p>
       <div className="my-8">
         <BlogPosts />
