@@ -1,31 +1,35 @@
-import { notFound } from 'next/navigation'
-import { CustomMDX } from 'app/components/mdx'
-import { formatDate, getBlogPosts } from 'app/blog/utils'
-import { baseUrl } from 'app/sitemap'
+import { notFound } from 'next/navigation';
+import { CustomMDX } from 'app/components/mdx';
+import { formatDate, getBlogPosts } from 'app/blog/utils';
+import { baseUrl } from 'app/sitemap';
 
+// Fetch static parameters (dynamic slugs)
 export async function generateStaticParams() {
-  let posts = getBlogPosts()
+  const posts = getBlogPosts();
 
   return posts.map((post) => ({
     slug: post.slug,
-  }))
+  }));
 }
 
-export function generateMetadata({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+// Generate metadata for SEO (Open Graph, Twitter cards, etc.)
+export async function generateMetadata({ params }) {
+  const post = getBlogPosts().find((post) => post.slug === params.slug);
+  
   if (!post) {
-    return
+    return;
   }
 
-  let {
+  const {
     title,
     publishedAt: publishedTime,
     summary: description,
     image,
-  } = post.metadata
-  let ogImage = image
+  } = post.metadata;
+
+  const ogImage = image
     ? image
-    : `${baseUrl}/og?title=${encodeURIComponent(title)}`
+    : `${baseUrl}/og?title=${encodeURIComponent(title)}`;
 
   return {
     title,
@@ -36,11 +40,7 @@ export function generateMetadata({ params }) {
       type: 'article',
       publishedTime,
       url: `${baseUrl}/blog/${post.slug}`,
-      images: [
-        {
-          url: ogImage,
-        },
-      ],
+      images: [{ url: ogImage }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -48,18 +48,22 @@ export function generateMetadata({ params }) {
       description,
       images: [ogImage],
     },
-  }
+  };
 }
 
-export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug)
+// Blog component for rendering blog post content
+export default async function Blog({ params }) {
+  // Ensure async logic is followed when fetching posts
+  const posts = await getBlogPosts();
+  const post = posts.find((post) => post.slug === params.slug);
 
   if (!post) {
-    notFound()
+    return notFound(); // Trigger a 404 if post not found
   }
 
   return (
     <section>
+      {/* JSON-LD for SEO */}
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -82,17 +86,22 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      {/* Blog Title */}
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {post.metadata.title}
       </h1>
+
+      {/* Published Date */}
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
         </p>
       </div>
+
+      {/* Blog Content */}
       <article className="prose">
         <CustomMDX source={post.content} />
       </article>
     </section>
-  )
+  );
 }
